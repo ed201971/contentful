@@ -1,0 +1,66 @@
+---
+jobs:
+
+- name: build-tools
+  serial: true
+  plan:
+  - get: master 
+  - put: docker-image
+    params: {build: master}
+
+- name: compile-spa
+  serial: true
+  plan:
+  - get: master
+    trigger: true
+  - task: build-application
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: 
+          repository: node 
+          #username: ((docker_login)) 
+          #password: ((docker_password))
+          #ca_certs: 
+          #- domain: registry-443.service.consul 
+          #  cert: ((ca_cert))        
+      inputs:
+      - name: master 
+      outputs:
+      - name: public 
+      params:
+        CONTENTFUL_ACCESS_TOKEN: ((contentful_api))
+        CONTENTFUL_SPACE_ID: ((contentful_id))
+        GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES: "true"
+      run:
+        path: /bin/sh
+        args:
+          - -c
+          - |
+              cd master
+              export PATH=$PWD/node_modules/.bin:$PATH
+              echo $PATH
+              npm install -g gatsby@2.25.4
+              npm install -g
+              ls -la node_modules/.bin
+              npm list
+              ./node_modules/.bin/gatsby build
+
+resources:
+
+- name: master
+  type: git
+  source:
+    uri: https://github.com/ed201971/contentful.git
+    branch: master
+
+- name: docker-image
+  type: docker-image
+  source:
+    username: ((docker_login)) 
+    password: ((docker_password))
+    repository: registry-443.service.consul/linux/app
+    ca_certs: 
+    - domain: registry-443.service.consul 
+      cert: ((ca_cert))
