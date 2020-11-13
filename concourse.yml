@@ -29,7 +29,7 @@ jobs:
       inputs:
       - name: master 
       outputs:
-      - name: public 
+      - name: output 
       params:
         CONTENTFUL_ACCESS_TOKEN: ((contentful_api))
         CONTENTFUL_SPACE_ID: ((contentful_id))
@@ -48,10 +48,12 @@ jobs:
               npm install
               #./node_modules/.bin/gatsby build --log-pages
               gatsby build --log-pages
-              cp Dockerhub_Dockerfile ../public/Dockerfile
+              ls -la
+              cp Dockerhub_Dockerfile ../output/Dockerfile
+              cp -R public ../output/public/
   - put: dockerhub-push
     params: 
-      build: public 
+      build: output 
       tag_file: master/.git/ref
       tag_prefix: dev-
 
