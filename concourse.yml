@@ -48,8 +48,9 @@ jobs:
               npm install
               #./node_modules/.bin/gatsby build --log-pages
               gatsby build --log-pages
-   - put: dockerhub-push
-     params: 
+              cp Dockerhub_Dockerfile ../public/Dockerfile
+  - put: dockerhub-push
+    params: 
       build: public 
       tag_file: master/.git/ref
       tag_prefix: dev-
@@ -71,10 +72,9 @@ resources:
     ca_certs: 
     - domain: registry-443.service.consul 
       cert: ((ca_cert))
-
- - name: dockerhub-push
-   type: docker-image
-   source:
-     repository: ed201971/cful
-     username: ((dockerhub_login))
-     password: ((dockerhub_password))
+- name: dockerhub-push
+  type: docker-image
+  source:
+    repository: ed201971/cful
+    username: ((dockerhub_login))
+    password: ((dockerhub_password))
