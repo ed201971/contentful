@@ -17,14 +17,14 @@
     with_dict: "{{ pipelines }}"
 
   - name: TEMP add global github creds
-     uri:
-      url: "{{ vault_addr }}:8200/v1/concourse/main/{{ github_login }}"
-      method: POST
-      headers:
-       X-Vault-Token: "{{ vault_token }}"
-      body: '{ "value": {{ github_password | to_json }} }'
-      validate_certs: no
-      status_code: 204
+    uri:
+     url: "{{ vault_addr }}:8200/v1/concourse/main/{{ github_login }}"
+     method: POST
+     headers:
+      X-Vault-Token: "{{ vault_token }}"
+     body: '{ "value": {{ github_password | to_json }} }'
+     validate_certs: no
+     status_code: 204
 
   # - copy: content={{ git_ssh_key }} dest=../concourse/ssh_key
   # - shell: vault kv put /concourse/main/test-pipeline/ssh_key value=@../concourse/ssh_key
