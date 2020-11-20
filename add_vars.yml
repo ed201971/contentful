@@ -1,0 +1,27 @@
+---
+  - set_fact:
+      pipeline_name: "{{ item.value.name }}"
+
+  - set_fact:
+      pipeline_creds: "{{ item.value.creds }}"
+
+  - debug: var=pipeline_name
+
+  - shell: vault kv put /concourse/main/"{{ pipeline_name }}"/ca_cert value=@../registry/certs/root_ca.crt
+    environment:
+      VAULT_TOKEN: "{{ vault_token }}"
+      VAULT_ADDR: "{{ vault_addr }}:8200"
+
+  - name: Add credentials for pipeline
+    include: add_creds.yml
+    with_dict: "{{ item.value.creds }}"
+
+  - name: Write registry user secret
+    uri:
+     url: "{{ vault_addr }}:8200/v1/registry/{{ item.value.creds.docker_login.value }}"
+     method: POST
+     headers:
+      X-Vault-Token: "{{ vault_token }}"
+     body: '{ "password": {{ item.value.creds.docker_password.value | to_json }}, "access": "repository:dev/{{ item.value.docker_image }}:*" }'
+     validate_certs: no
+     status_code: 204

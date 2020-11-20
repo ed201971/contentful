@@ -1,0 +1,68 @@
+---
+- hosts: localhost
+  vars:
+    vault_keys_list: []
+    vault_addr: "https://vault.service.consul"
+
+  tasks:
+  - include_vars: secrets.yml
+
+  - name: Set facts
+    include: set_facts.yml
+    tags:
+      - set_facts
+
+  - name: Add pipelines vars
+    include: add_vars.yml
+    with_dict: "{{ pipelines }}"
+
+  # - name: TEMP add global github creds
+  #   uri:
+  #    url: "{{ vault_addr }}:8200/v1/concourse/main/{{ github_login }}"
+  #    method: POST
+  #    headers:
+  #     X-Vault-Token: "{{ vault_token }}"
+  #    body: '{ "value": {{ github_password | to_json }} }'
+  #    validate_certs: no
+  #    status_code: 204
+
+  # - copy: content={{ git_ssh_key }} dest=../concourse/ssh_key
+  # - shell: vault kv put /concourse/main/test-pipeline/ssh_key value=@../concourse/ssh_key
+  #   environment:
+  #     VAULT_TOKEN: "{{ vault_token }}"
+
+#   - shell: vault kv put /concourse/main/test-pipeline/ca_cert value=@../registry/certs/root_ca.crt
+#     environment:
+#       VAULT_TOKEN: "{{ vault_token }}"
+#       VAULT_ADDR: "{{ vault_addr }}:8200"
+
+#   - name: Add credentials for pipeline
+#     include: add_creds.yml
+#     with_dict: "{{ my_pipeline }}"
+#     tags:
+#       - add_pipeline
+
+# # Possibly a little insecure as we need the root key for vault to edit the registry config
+#   - name: Write registry user secret
+#     uri:
+#      url: "{{ vault_addr }}:8200/v1/registry/{{ my_pipeline.docker_login.value }}"
+#      method: POST
+#      headers:
+#       X-Vault-Token: "{{ vault_token }}"
+#      body: '{ "password": {{ my_pipeline.docker_password.value | to_json }}, "access": "repository:linux/kubes:*;repository:dev/app:*;repository:linux/db:pull" }'
+#      validate_certs: no
+#      status_code: 204
+#     tags:
+#       - add_pipeline
+
+#   - name: Write registry user secret
+#     uri:
+#      url: "{{ vault_addr }}:8200/v1/registry/{{ my_pipeline.k8s_login.value }}"
+#      method: POST
+#      headers:
+#       X-Vault-Token: "{{ vault_token }}"
+#      body: '{ "password": {{ my_pipeline.k8s_password.value | to_json }}, "access": "repository:dev/{{ docker_image }}:*" }'
+#      validate_certs: no
+#      status_code: 204
+#     tags:
+#       - add_pipeline
