@@ -1,16 +1,23 @@
 ---
 - hosts: localhost
   vars:
-    vault_keys_list: []
     vault_addr: "https://vault.service.consul"
 
   tasks:
   - include_vars: secrets.yml
 
-#  - name: Set facts
-#    include: set_facts.yml
-#    tags:
-#      - set_facts
+  - name: Get AppRole token from vault 
+    uri:
+     url: "{{ vault_addr }}:8200/v1/auth/approle/login"
+     method: POST
+     body: '{ "role_id": {{ role_id | to_json }}, "secret_id": {{ secret_id | to_json }} }'
+     validate_certs: no
+     status_code: 200
+    ignore_errors: yes
+    register: approle_token
+
+  - set_fact:
+      vault_token: "{{ approle_token.json.auth.client_token }}"
 
   - name: Add pipelines vars
     include: add_vars.yml
