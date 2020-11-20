@@ -1,0 +1,11 @@
+---
+
+  - name: Add k:v for {{ pipeline_name }} / {{ item.value.key }}
+    uri:
+     url: "{{ vault_addr }}:8200/v1/concourse/main/{{ pipeline_name }}/{{ item.value.key }}"
+     method: POST
+     headers:
+      X-Vault-Token: "{{ vault_token }}"
+     body: '{ "value": {{ item.value.value | to_json }} }'
+     validate_certs: no
+     status_code: 204
