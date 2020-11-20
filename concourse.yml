@@ -20,12 +20,12 @@ jobs:
         type: docker-image
         source: 
           repository: node 
-          #repository: registry-443.service.consul/linux/app 
-          #username: ((docker_login)) 
-          #password: ((docker_password))
-          #ca_certs: 
-          #- domain: registry-443.service.consul 
-          #  cert: ((ca_cert))        
+          repository: registry-443.service.consul/linux/app 
+          username: ((docker_login)) 
+          password: ((docker_password))
+          ca_certs: 
+          - domain: registry-443.service.consul 
+            cert: ((ca_cert))        
       inputs:
       - name: master 
       outputs:
@@ -51,11 +51,11 @@ jobs:
               ls -la
               cp Dockerhub_Dockerfile ../output/Dockerfile
               cp -R public ../output/public/
-  - put: dockerhub-push
-    params: 
-      build: output 
-      tag_file: master/.git/ref
-      tag_prefix: dev-
+#  - put: dockerhub-push
+#    params: 
+#      build: output 
+#      tag_file: master/.git/ref
+#      tag_prefix: dev-
 
 resources:
 
@@ -74,9 +74,10 @@ resources:
     ca_certs: 
     - domain: registry-443.service.consul 
       cert: ((ca_cert))
-- name: dockerhub-push
-  type: docker-image
-  source:
-    repository: ed201971/cful
-    username: ((dockerhub_login))
-    password: ((dockerhub_password))
+
+#- name: dockerhub-push
+#  type: docker-image
+#  source:
+#    repository: ed201971/cful
+#    username: ((dockerhub_login))
+#    password: ((dockerhub_password))
