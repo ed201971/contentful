@@ -1,5 +1,7 @@
 ---
 
+  - debug: var=vault_token
+
   - name: Add k:v for {{ pipeline_name }} / {{ item.value.key }}
     uri:
      url: "{{ vault_addr }}:8200/v1/concourse/main/{{ pipeline_name }}/{{ item.value.key }}"

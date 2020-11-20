@@ -5,13 +5,6 @@
   - set_fact:
       pipeline_creds: "{{ item.value.creds }}"
 
-  - debug: var=pipeline_name
-
-#  - shell: vault kv put /concourse/main/"{{ pipeline_name }}"/ca_cert value=@../registry/certs/root_ca.crt
-#    environment:
-#      VAULT_TOKEN: "{{ vault_token }}"
-#      VAULT_ADDR: "{{ vault_addr }}:8200"
-
   - name: Add credentials for pipeline
     include: add_creds.yml
     with_dict: "{{ item.value.creds }}"
