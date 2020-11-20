@@ -7,10 +7,10 @@
   tasks:
   - include_vars: secrets.yml
 
-  - name: Set facts
-    include: set_facts.yml
-    tags:
-      - set_facts
+#  - name: Set facts
+#    include: set_facts.yml
+#    tags:
+#      - set_facts
 
   - name: Add pipelines vars
     include: add_vars.yml
