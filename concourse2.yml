@@ -70,7 +70,7 @@ resources:
   source:
     username: ((docker_login)) 
     password: ((docker_password))
-    repository: registry-443.service.consul/dev/apple
+    repository: registry-443.service.consul/dev/pear
     ca_certs: 
     - domain: registry-443.service.consul 
       cert: ((ca_cert))
