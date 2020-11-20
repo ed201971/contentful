@@ -1,0 +1,9 @@
+---
+  - set_fact:
+      vault_keys_file: "{{ lookup('file', 'vault_keys') | from_json }}"
+
+  - set_fact:
+      vault_keys: "{{ vault_keys_file.json.keys_base64 }}"
+
+  - set_fact: 
+      vault_token: "{{ vault_keys_file.json.root_token }}"
