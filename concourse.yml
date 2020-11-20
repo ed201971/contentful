@@ -20,7 +20,7 @@ jobs:
         type: docker-image
         source: 
           repository: node 
-          repository: registry-443.service.consul/linux/app 
+          repository: registry-443.service.consul/dev/apple
           username: ((docker_login)) 
           password: ((docker_password))
           ca_certs: 
@@ -44,8 +44,8 @@ jobs:
           - |
               cd master
               export PATH=$PWD/node_modules/.bin:$PATH
-              npm install gatsby@2.25.4
-              npm install
+              #npm install gatsby@2.25.4
+              #npm install
               #./node_modules/.bin/gatsby build --log-pages
               gatsby build --log-pages
               ls -la
